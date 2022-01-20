@@ -12,11 +12,6 @@ import {
   View,
   ViewToken,
 } from "react-native";
-import { createClient, dedupExchange, fetchExchange, useQuery } from "urql";
-import { cacheExchange } from "@urql/exchange-graphcache";
-import { simplePagination } from "@urql/exchange-graphcache/extras";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { collectTypesFromResponse } from "@urql/core/dist/types/utils";
 import { useNavigation } from "@react-navigation/native";
 
 const query = `

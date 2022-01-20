@@ -2,7 +2,8 @@
   "expo": {
     "userInterfaceStyle": "automatic",
     "name": "react-native-ionic",
-    "slug": "react-native-ionic",
+    "slug": "1timesports-app",
+    "scheme": "com.onetimesports.dev",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,13 +17,15 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.onetimesports.dev"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.onetimesports.dev"
     },
     "web": {
       "favicon": "./assets/favicon.png"

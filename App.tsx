@@ -28,6 +28,11 @@ import { ProfileHome } from "./components/ProfileHome";
 import { ChatHome } from "./components/ChatHome";
 import { Ionicons } from "@expo/vector-icons";
 import { ChatDetail } from "./components/ChatDetail";
+import { Login } from "./components/Login";
+import { initializeFirebase } from "./initializers/initializeFirebase";
+import * as WebBrowser from "expo-web-browser";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const query = `
   query ($limit: Int!, $offset: Int!) {
@@ -85,6 +90,7 @@ const client = createClient({
 
 const limit = 10;
 
+const RootStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -115,9 +121,46 @@ const HomeStackScreen = () => {
   );
 };
 
+const TabStack = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName:
+            | "home"
+            | "home-outline"
+            | "chatbubble"
+            | "chatbubble-outline"
+            | "person-circle"
+            | "person-circle-outline" = "home-outline";
+
+          if (route.name === "HomeScreen") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "ChatScreen") {
+            iconName = focused ? "chatbubble" : "chatbubble-outline";
+          } else if (route.name === "ProfileScreen") {
+            iconName = focused ? "person-circle" : "person-circle-outline";
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: "tomato",
+        tabBarInactiveTintColor: "gray",
+      })}
+      initialRouteName="HomeScreen"
+    >
+      <Tab.Screen name="HomeScreen" component={HomeStackScreen} />
+      <Tab.Screen name="ChatScreen" component={ChatStackScreen} />
+      <Tab.Screen name="ProfileScreen" component={ProfileStackScreen} />
+    </Tab.Navigator>
+  );
+};
+
 export default function App() {
   useEffect(() => {
     theme();
+    initializeFirebase();
   }, []);
   const scheme = useColorScheme();
 
@@ -128,39 +171,10 @@ export default function App() {
           <NavigationContainer
             theme={scheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                headerShown: false,
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName:
-                    | "home"
-                    | "home-outline"
-                    | "chatbubble"
-                    | "chatbubble-outline"
-                    | "person-circle"
-                    | "person-circle-outline" = "home-outline";
-
-                  if (route.name === "HomeScreen") {
-                    iconName = focused ? "home" : "home-outline";
-                  } else if (route.name === "ChatScreen") {
-                    iconName = focused ? "chatbubble" : "chatbubble-outline";
-                  } else if (route.name === "ProfileScreen") {
-                    iconName = focused
-                      ? "person-circle"
-                      : "person-circle-outline";
-                  }
-
-                  return <Ionicons name={iconName} size={size} color={color} />;
-                },
-                tabBarActiveTintColor: "tomato",
-                tabBarInactiveTintColor: "gray",
-              })}
-              initialRouteName="HomeScreen"
-            >
-              <Tab.Screen name="HomeScreen" component={HomeStackScreen} />
-              <Tab.Screen name="ChatScreen" component={ChatStackScreen} />
-              <Tab.Screen name="ProfileScreen" component={ProfileStackScreen} />
-            </Tab.Navigator>
+            <RootStack.Navigator>
+              <RootStack.Screen name="Login" component={Login} />
+              <RootStack.Screen name="Tabs" component={TabStack} />
+            </RootStack.Navigator>
             <StatusBar style="auto" />
           </NavigationContainer>
         </Provider>
